@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impacto económico de los ciberataques en pymes de Guatemala</title>
+
+<!--
+=====================================================================
+  GUÍA PARA EDITAR ESTA PÁGINA (sin panel de carga para visitantes)
+=====================================================================
+1. VIDEO DE YOUTUBE: al final del archivo, en el bloque "VIDEO YOUTUBE",
+   cambia la línea const URL_VIDEO_YOUTUBE = ""; por la URL de tu video.
+   Ejemplo: const URL_VIDEO_YOUTUBE = "https://youtu.be/ABCDEFGHIJK";
+   La miniatura aparecerá automáticamente y al pulsarla abrirá YouTube.
+2. FOTOS FIJAS: guarda las fotografías en la carpeta img junto a index.html.
+   Ya se usa img/erick.jpg en el integrante 1. Para los demás, reemplaza
+   los iconos de su tarjeta por <img src="img/nombre.jpg" alt="...">.
+   No hay formularios para subir archivos.
+3. INTEGRANTES: cambia directamente en el HTML el nombre y el carné.
+4. COLORES: variables en :root del CSS.
+5. AGREGAR TARJETAS: copia un bloque <article class="card"> ... </article>.
+6. AGREGAR SECCIONES: copia un <section id="..."> y añade su enlace en <nav>.
+=====================================================================
+-->
+
+<style>
+  :root {
+    --fondo: #0b1220;
+    --fondo-2: #0f1830;
+    --tarjeta: #121b2e;
+    --borde: #1f2d4a;
+    --texto: #e6edf7;
+    --suave: #9fb0cc;
+    --acento: #00e0a4;
+    --acento-2: #3b9eff;
+    --alerta: #ff5c7a;
+    --aviso: #ffd25c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--fondo); color: var(--texto); line-height: 1.65;
+  }
+  a { color: var(--acento-2); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .contenedor { width: min(1100px, 92%); margin: 0 auto; }
+
+  /* Barra de progreso */
+  #progreso { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--acento); z-index: 50; }
+
+  /* Menú */
+  header {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(11,18,32,.93); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--borde);
+  }
+  nav { display: flex; align-items: center; gap: 22px; padding: 12px 0; }
+  .logo { font-weight: 700; color: var(--acento); white-space: nowrap; letter-spacing: .5px; }
+  nav ul { display: flex; gap: 6px; list-style: none; overflow-x: auto; scrollbar-width: none; }
+  nav ul::-webkit-scrollbar { display: none; }
+  nav ul a {
+    color: var(--suave); font-size: .88rem; padding: 6px 11px; border-radius: 20px;
+    white-space: nowrap; display: block;
+  }
+  nav ul a:hover { color: var(--acento); text-decoration: none; }
+  nav ul a.activo { background: rgba(0,224,164,.14); color: var(--acento); }
+
+  /* Portada */
+  .hero {
+    padding: 90px 0 70px; text-align: center;
+    background: radial-gradient(circle at 50% 0%, rgba(0,224,164,.16), transparent 60%);
+  }
+  .etiqueta {
+    display: inline-block; font-size: .78rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--acento); border: 1px solid var(--acento); border-radius: 20px; padding: 4px 14px; margin-bottom: 18px;
+  }
+  .hero h1 { font-size: clamp(1.9rem, 4.6vw, 3.1rem); line-height: 1.2; max-width: 900px; margin: 0 auto 16px; }
+  .hero h1 span { color: var(--acento); }
+  .hero .lead { color: var(--suave); max-width: 720px; margin: 0 auto 28px; font-size: 1.08rem; }
+  .datos {
+    display: inline-grid; grid-template-columns: auto auto; gap: 6px 18px; text-align: left;
+    background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px;
+    padding: 18px 24px; margin-bottom: 28px; font-size: .92rem;
+  }
+  .datos dt { color: var(--suave); }
+  .datos dd { color: var(--texto); }
+  .boton {
+    display: inline-block; background: var(--acento); color: #04141a; padding: 12px 26px;
+    border-radius: 8px; font-weight: 700; border: none; cursor: pointer; font-size: 1rem;
+  }
+  .boton:hover { filter: brightness(1.1); text-decoration: none; }
+  .boton.sec { background: transparent; color: var(--texto); border: 1px solid var(--borde); }
+  .boton.sec:hover { border-color: var(--acento); }
+
+  /* Secciones */
+  section { padding: 70px 0; }
+  section.alt { background: rgba(255,255,255,.025); }
+  .cap { color: var(--acento-2); font-size: .8rem; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+  section h2 { font-size: 1.8rem; margin-bottom: 8px; }
+  section h2::before { content: "// "; color: var(--acento); }
+  h3 { font-size: 1.15rem; margin: 26px 0 10px; color: var(--acento); }
+  .sub { color: var(--suave); margin-bottom: 28px; max-width: 780px; }
+  p + p { margin-top: 12px; }
+  .texto { max-width: 800px; color: #cdd8ea; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+  .card {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 22px;
+    transition: transform .2s, border-color .2s;
+  }
+  .card:hover { transform: translateY(-3px); border-color: var(--acento); }
+  .card .emoji { font-size: 1.8rem; display: block; margin-bottom: 8px; }
+  .card h4 { color: var(--acento); margin-bottom: 6px; font-size: 1.05rem; }
+  .card p { color: var(--suave); font-size: .93rem; }
+  .card.rojo:hover { border-color: var(--alerta); }
+  .card.rojo h4 { color: var(--alerta); }
+  .card.azul h4 { color: var(--acento-2); }
+
+  .aviso {
+    border-left: 4px solid var(--aviso); background: rgba(255,210,92,.08);
+    padding: 14px 18px; border-radius: 0 10px 10px 0; margin: 22px 0; color: #f0e4b8; font-size: .95rem;
+  }
+  .aviso.ok { border-color: var(--acento); background: rgba(0,224,164,.08); color: #c6f5e6; }
+  .aviso.mal { border-color: var(--alerta); background: rgba(255,92,122,.08); color: #ffd0d9; }
+
+  /* Cifras */
+  .cifras { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 24px 0; }
+  .cifra { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 18px; text-align: center; }
+  .cifra b { display: block; font-size: 2rem; color: var(--acento); line-height: 1.1; }
+  .cifra span { color: var(--suave); font-size: .85rem; }
+
+  /* Tablas */
+  .tabla-wrap { overflow-x: auto; margin: 18px 0; border: 1px solid var(--borde); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; min-width: 520px; }
+  th { background: #16223b; text-align: left; padding: 11px 14px; color: var(--acento); font-weight: 600; }
+  td { padding: 10px 14px; border-top: 1px solid var(--borde); color: #cdd8ea; vertical-align: top; }
+  tr:hover td { background: rgba(255,255,255,.02); }
+  .tabla-titulo { color: var(--suave); font-size: .85rem; margin-top: 22px; }
+  .neg { color: var(--alerta); font-weight: 600; }
+  .pos { color: var(--acento); font-weight: 600; }
+  .pill { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: .78rem; font-weight: 600; }
+  .pill.ok { background: rgba(0,224,164,.15); color: var(--acento); }
+  .pill.pend { background: rgba(255,210,92,.15); color: var(--aviso); }
+  .pill.no { background: rgba(255,92,122,.15); color: var(--alerta); }
+
+  /* Listas */
+  .lista { list-style: none; max-width: 800px; }
+  .lista li { background: var(--tarjeta); border: 1px solid var(--borde); padding: 12px 16px; margin-bottom: 9px; border-radius: 8px; color: #cdd8ea; }
+  .lista li::before { content: "▸ "; color: var(--acento); font-weight: bold; }
+  ol.pasos { list-style: none; counter-reset: p; max-width: 800px; }
+  ol.pasos li { counter-increment: p; display: flex; gap: 14px; background: var(--tarjeta); border: 1px solid var(--borde); padding: 12px 16px; margin-bottom: 9px; border-radius: 8px; color: #cdd8ea; }
+  ol.pasos li::before { content: counter(p); flex: 0 0 28px; height: 28px; border-radius: 50%; background: var(--acento); color: #04141a; font-weight: 700; display: grid; place-items: center; font-size: .85rem; }
+
+  /* Fórmula */
+  .formula {
+    font-family: "Cascadia Code", Consolas, monospace; background: #08101d; border: 1px solid var(--borde);
+    border-radius: 10px; padding: 14px 18px; margin: 14px 0; color: var(--acento); font-size: .95rem; overflow-x: auto;
+  }
+
+  /* Calculadora */
+  .calc { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  @media (max-width: 800px) { .calc { grid-template-columns: 1fr; } .datos { grid-template-columns: 1fr; } }
+  .caja { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 12px; padding: 24px; }
+  .caja h4 { color: var(--acento); margin-bottom: 12px; }
+  .campo { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; font-size: .92rem; color: var(--suave); }
+  .campo input {
+    width: 120px; padding: 8px 10px; background: var(--fondo); color: var(--texto);
+    border: 1px solid var(--borde); border-radius: 8px; font-size: .95rem; text-align: right;
+  }
+  .resultado { display: flex; justify-content: space-between; padding: 9px 0; border-top: 1px solid var(--borde); font-size: .95rem; }
+  .resultado b { color: var(--texto); }
+  .resultado.grande b { font-size: 1.3rem; }
+  #veredicto { margin-top: 12px; padding: 12px 14px; border-radius: 10px; font-size: .92rem; }
+
+  /* Diagrama de capas */
+  .capas { max-width: 640px; margin: 20px 0; }
+  .capa {
+    background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 10px;
+    padding: 12px 18px; text-align: center; position: relative;
+  }
+  .capa b { color: var(--acento); }
+  .capa small { display: block; color: var(--suave); }
+  .capa + .capa { margin-top: 22px; }
+  .capa + .capa::before { content: "▼"; position: absolute; top: -19px; left: 50%; transform: translateX(-50%); color: var(--acento-2); font-size: .8rem; }
+
+  /* Línea de tiempo */
+  .tiempo { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-top: 20px; }
+  .semana { background: var(--tarjeta); border: 1px solid var(--borde); border-top: 3px solid var(--acento-2); border-radius: 10px; padding: 16px; }
+  .semana b { color: var(--acento-2); display: block; margin-bottom: 4px; }
+  .semana p { font-size: .88rem; color: var(--suave); }
+
+  /* Video de YouTube: solo miniatura con enlace, sin carga de archivos */
+  .video-caja { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 14px; padding: 22px; }
+  .pantalla {
+    aspect-ratio: 16/9; width: 100%; background: #060b15; border-radius: 10px;
+    overflow: hidden; display: grid; place-items: center; border: 1px solid var(--borde);
+  }
+  .video-miniatura { display: block; width: 100%; height: 100%; position: relative; color: #fff; }
+  .video-miniatura:hover { text-decoration: none; }
+  .video-miniatura img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .video-miniatura::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,.16); pointer-events: none; }
+  .video-play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 78px; height: 55px; display: grid; place-items: center;
+    background: #ff0033; border-radius: 16px; color: white;
+    font-size: 1.65rem; z-index: 1; transition: transform .2s;
+  }
+  .video-miniatura:hover .video-play { transform: translate(-50%, -50%) scale(1.1); }
+  .video-rotulo {
+    position: absolute; left: 0; bottom: 0; width: 100%; z-index: 1;
+    padding: 17px; background: linear-gradient(transparent, rgba(0,0,0,.9));
+    color: #fff; font-weight: 700; text-align: center;
+  }
+  .video-pendiente { text-align: center; color: var(--suave); padding: 30px; }
+  .video-pendiente .emoji { font-size: 3rem; display: block; margin-bottom: 10px; }
+  .video-nota { margin-top: 12px; color: var(--suave); font-size: .9rem; }
+
+  /* Equipo: fotografías fijas desde la carpeta img */
+  .equipo { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px; }
+  .miembro { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 14px; padding: 18px; text-align: center; }
+  .miembro:hover { border-color: var(--acento); }
+  .foto {
+    width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 14px; overflow: hidden;
+    background: #060b15; border: 2px solid var(--borde); display: grid;
+    place-items: center; color: var(--suave); font-size: .8rem;
+  }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto .ph { font-size: 3rem; }
+  .miembro .nombre { font-weight: 700; font-size: 1.02rem; min-height: 1.6em; padding: 2px 4px; }
+  .miembro .carne { color: var(--acento); font-size: .9rem; margin-top: 4px; padding: 2px 4px; }
+
+  footer { border-top: 1px solid var(--borde); padding: 30px 0; text-align: center; color: var(--suave); font-size: .88rem; }
+  .ref { font-size: .9rem; color: var(--suave); padding-left: 1.4em; text-indent: -1.4em; margin-bottom: 10px; max-width: 850px; word-break: break-word; }
+
+  /* Animación de entrada */
+  .rev { opacity: 0; transform: translateY(16px); transition: opacity .5s, transform .5s; }
+  .rev.vis { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rev { opacity: 1; transform: none; transition: none; } html { scroll-behavior: auto; } }
+  @media print { header, #progreso { display: none; } .rev { opacity: 1; transform: none; } }
+</style>
+</head>
+
+<body>
+<div id="progreso"></div>
+
+<!-- ============ MENÚ ============ -->
+<header>
+  <div class="contenedor">
+    <nav>
+      <div class="logo">🛡️ CiberCosto Pyme GT</div>
+      <ul id="menu">
+        <li>Inicio</li>
+        <li>Documento</li>
+        <li>Resumen</li>
+        <li>Video</li>
+        <li>Problema</li>
+        <li>Números</li>
+        <li>Equipo</li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ PORTADA ============ -->
+<div class="hero" id="inicio">
+  <div class="contenedor">
+    <span class="etiqueta">Investigación aplicada · Microeconomía</span>
+    <h1>El impacto económico de los <span>ciberataques</span> en las pequeñas y medianas empresas de Guatemala</h1>
+    <p class="lead">Análisis microeconómico de costos y prevención, y estudio técnico de la propuesta <b>CiberCosto Pyme GT</b>.</p>
+
+    <!-- ===== DATOS EDITABLES: cambia lo que está entre las etiquetas <dd> ===== -->
+    <dl class="datos">
+      <dt>Universidad</dt><dd>Mariano Gálvez de Guatemala</dd>
+      <dt>Carrera</dt><dd>Ingeniería en Sistemas</dd>
+      <dt>Curso</dt><dd>Microeconomía</dd>
+      <dt>Docente</dt><dd>Lic. Raúl Estuardo Bonilla B.</dd>
+      <dt>Sección</dt><dd>C</dd>
+      <dt>Fecha</dt><dd>Guatemala, 17 octubre de 2026</dd>
+    </dl>
+    <!-- ===== FIN DATOS EDITABLES ===== -->
+
+    <div>
+      <a href="#video" class="boton">▶ Ver el video</a>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ ENLACE DEL DOCUMENTO DEL PROYECTO ============ -->
+<section id="documento" class="alt">
+  <div class="contenedor rev">
+    <div class="cap">Documento del proyecto</div>
+    <h2>Enlace del documento del proyecto</h2>
+    <p class="sub">Consulta el documento completo de la investigación.</p>
+    <div class="caja">
+      <h4>📄 Documento de investigación</h4>
+      <p id="documento-pendiente" class="sub">....</p>
+      <a id="documento-abrir" class="boton" href="#" target="_blank" rel="noopener noreferrer" style="display:none">Abrir documento ↗</a>
+    </div>
+  </div>
+</section>
+
+<script>
+/* DOCUMENTO DEL PROYECTO: PEGA AQUÍ EL ENLACE DE GOOGLE DRIVE */
+const URL_DOCUMENTO_DRIVE = "https://drive.google.com/file/d/1zptVW0ayBcai_pYdqZcTdupLl1ruhr5h/view?usp=sharing";
+
+(function prepararDocumento() {
+  const direccion = URL_DOCUMENTO_DRIVE.trim();
+  try {
+    const url = new URL(direccion);
+    if (url.protocol !== "https:" || !["drive.google.com", "docs.google.com"].includes(url.hostname.toLowerCase())) return;
+    const boton = document.getElementById("documento-abrir");
+    boton.href = url.href;
+    boton.style.display = "inline-block";
+    document.getElementById("documento-pendiente").style.display = "none";
+  } catch (_) {
+    /* Sin enlace configurado, el sitio conserva el aviso. */
+  }
+})();
+</script>
+
+<!-- ============ RESUMEN ============ -->
+<section id="resumen" class="alt">
+  <div class="contenedor rev">
+    <div class="cap">Resumen ejecutivo</div>
+    <h2>¿De qué trata esta investigación?</h2>
+    <p class="sub">Cómo valorar en quetzales lo que puede costarle un ciberataque a una pyme y cómo priorizar la prevención cuando el presupuesto es limitado.</p>
+
+    <p class="texto">La investigación analiza los costos que podrían generar los ciberataques en pymes comerciales de Guatemala y examina una alternativa para priorizar acciones preventivas. Combina <b>revisión documental</b>, un <b>modelo microeconómico por escenarios</b> y un <b>protocolo de estudio de casos</b> no probabilístico, usando el marco <b>NIST CSF 2.0</b> y la clasificación empresarial del MINECO.</p>
+
+    <div class="cifras">
+      <div class="cifra"><b>3</b><span>empresas voluntarias previstas</span></div>
+      <div class="cifra"><b>8</b><span>semanas de trabajo</span></div>
+      <div class="cifra"><b>20</b><span>ítems de diagnóstico</span></div>
+      <div class="cifra"><b>5</b><span>casos manuales de control</span></div>
+      <div class="cifra"><b>192</b><span>horas de roles</span></div>
+    </div>
+
+    <div class="aviso">
+      <b>Alcance honesto:</b> esta es una investigación documental con un protocolo de campo formulado. La recolección con empresas, el software y la validación práctica <b>no se presentan como actividades concluidas</b>. No se atribuyen cifras nacionales de pérdidas ni ahorros reales a simulaciones hipotéticas.
+    </div>
+  </div>
+</section>
+
+<!-- ============ VIDEO DE YOUTUBE ============ -->
+<section id="video">
+  <div class="contenedor rev">
+    <div class="cap">Explicación del equipo</div>
+    <h2>Video de la investigación</h2>
+
+    <div class="video-caja">
+      <div class="pantalla" id="pantalla-video">
+        <div class="video-pendiente"><span class="emoji">🎬</span>Video pendiente de publicar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROBLEMA ============ -->
+<section id="problema" class="alt">
+  <div class="contenedor rev">
+    <div class="cap">Capítulo I · Iniciación</div>
+    <h2>El problema y sus límites</h2>
+    <p class="sub">Las pymes dependen cada vez más de lo digital, pero rara vez saben cuánto les costaría un incidente.</p>
+
+    <p class="texto">Registrar ventas, organizar inventarios, atender clientes y guardar documentos genera productividad, pero abre la puerta a interrupciones, pérdida de acceso a archivos, engaños de pago y exposición de información. Un incidente no es solo el gasto de reparar un equipo: afecta el flujo de caja, la continuidad comercial y el tiempo del personal.</p>
+
+    <div class="aviso mal">
+      <b>Dato clave:</b> sin registros empresariales verificables <b>no se puede afirmar una pérdida promedio para Guatemala</b>. La investigación no copia porcentajes ni montos de otros mercados.
+    </div>
+
+    <h3>Pregunta central</h3>
+    <div class="caja"><p>¿Qué costos económicos directos e indirectos pueden asociarse con escenarios de ciberataque relevantes para pymes comerciales del municipio de Guatemala, y cómo pueden utilizarse estas estimaciones para priorizar medidas de ciberseguridad dentro de un presupuesto limitado?</p></div>
+
+    <h3>Objetivo general</h3>
+    <p class="texto">Analizar, mediante revisión documental, modelación microeconómica y un estudio de casos propuesto para ocho semanas, los costos potenciales y las condiciones de prevención de ciberataques en tres pymes comerciales del municipio de Guatemala, para fundamentar criterios de priorización económica y evaluar la pertinencia de CiberCosto Pyme GT.</p>
+
+    <h3>Objetivos específicos</h3>
+    <ol class="pasos">
+      <li>Caracterizar la dependencia digital y las medidas de seguridad actuales de tres pymes con fichas y un instrumento de 20 preguntas.</li>
+      <li>Identificar y clasificar componentes de pérdidas directas e indirectas, documentando fuentes, supuestos y límites.</li>
+      <li>Construir y comprobar con cinco ejemplos manuales un modelo de estimación de costos y comparación anual de medidas preventivas, evitando el doble conteo.</li>
+      <li>Examinar la viabilidad técnica, económica, operativa, temporal y legal de una solución local de reportes de riesgo.</li>
+      <li>Definir indicadores para evaluar comprensión, utilidad y aceptabilidad de la herramienta, sin inferir causalmente una reducción de pérdidas.</li>
+    </ol>
+
+    <h3>Delimitación</h3>
+    <div class="tabla-wrap"><table>
+      <tr><th>Dimensión</th><th>Delimitación</th></tr>
+      <tr><td>Geográfica</td><td>Municipio de Guatemala para el estudio de casos; sin inferencia nacional.</td></tr>
+      <tr><td>Sectorial</td><td>Pymes de comercio minorista con computadora, correo, inventario o ventas digitales.</td></tr>
+      <tr><td>Muestra</td><td>Intencional: 3 empresas voluntarias (E01, E02, E03), condicionada a clasificación oficial y acceso.</td></tr>
+      <tr><td>Temporal</td><td>Ocho semanas tras la aprobación; no significa que ya haya comenzado.</td></tr>
+      <tr><td>Exclusiones</td><td>Auditorías certificadas, escaneo invasivo, explotación de vulnerabilidades, phishing real simulado, monitoreo permanente y resultados causales de ahorro.</td></tr>
+    </table></div>
+  </div>
+</section>
+
+<!-- ============ MICROECONOMÍA ============ -->
+<section id="micro">
+  <div class="contenedor rev">
+    <div class="cap">Capítulo II · Fundamentación</div>
+    <h2>Análisis microeconómico</h2>
+    <p class="sub">Cada quetzal en prevención tiene un costo de oportunidad frente a inventario, personal o publicidad.</p>
+
+    <div class="grid">
+      <article class="card azul">
+        <span class="emoji">⚖️</span>
+        <h4>Escasez y elección</h4>
+        <p>Si una pyme destina Q 600 a respaldos o autenticación, renuncia a otros usos de ese dinero. La conveniencia depende del costo frente a lo que protege, no de que la medida sea "barata".</p>
+      </article>
+      <article class="card azul">
+        <span class="emoji">🧮</span>
+        <h4>Sin doble conteo</h4>
+        <p>No se suman "ventas perdidas" completas y "margen perdido" a la vez. Una compra diferida que luego se realiza no es venta perdida.</p>
+      </article>
+      <article class="card azul">
+        <span class="emoji">🎲</span>
+        <h4>Riesgo ≠ probabilidad</h4>
+        <p>Una etiqueta "alto" no equivale a 70 %. Para el análisis financiero se necesitan frecuencias históricas o rangos hipotéticos visibles con sensibilidad.</p>
+      </article>
+    </div>
+
+    <h3>Costos directos e indirectos</h3>
+    <div class="grid">
+      <article class="card rojo"><h4>Directos</h4><p>Restauración, apoyo técnico contratado, sustitución urgente de recursos y transferencias fraudulentas no recuperadas.</p></article>
+      <article class="card rojo"><h4>Indirectos</h4><p>Margen de contribución no generado, tiempo improductivo adicional y otras alteraciones verificadas. El daño reputacional se describe, pero no se convierte en quetzales sin método defendible.</p></article>
+    </div>
+
+    <h3>Las fórmulas del modelo</h3>
+    <div class="formula">CTI = recuperación + fraude neto no recuperado + margen de contribución perdido + otros costos incrementales</div>
+    <div class="formula">Margen perdido = ventas que NO se recuperarán × % de margen de contribución</div>
+    <div class="formula">CPA = desembolso inicial atribuible al año + operación anual + horas valoradas del personal</div>
+    <div class="formula">PAE = probabilidad anual × CTI     ·     Beneficio neto = PAE sin control − PAE con control − CPA</div>
+
+    <h3>Pruébalo tú: simulador interactivo</h3>
+    <p class="texto">Cambia los números y mira cómo cambia la decisión. Los valores iniciales son los del ejemplo hipotético de la investigación (Q 8,000 de incidente, Q 600 de medida).</p>
+
+    <div class="calc">
+      <div class="caja">
+        <h4>1 · Costo del incidente (CTI)</h4>
+        <label class="campo">Gasto de recuperación (Q) <input type="number" id="c-rec" value="2000" min="0"></label>
+        <label class="campo">Fraude neto no recuperado (Q) <input type="number" id="c-fra" value="1000" min="0"></label>
+        <label class="campo">Ventas no recuperables (Q) <input type="number" id="c-ven" value="10000" min="0"></label>
+        <label class="campo">Margen de contribución (%) <input type="number" id="c-mar" value="30" min="0" max="100"></label>
+        <label class="campo">Otros costos incrementales (Q) <input type="number" id="c-otr" value="2000" min="0"></label>
+        <div class="resultado"><span>Margen perdido</span><b id="r-margen">Q 3,000</b></div>
+        <div class="resultado grande"><span>CTI</span><b id="r-cti">Q 8,000</b></div>
+      </div>
+
+      <div class="caja">
+        <h4>2 · ¿Conviene la medida preventiva?</h4>
+        <label class="campo">Probabilidad anual SIN control (%) <input type="number" id="p-sin" value="20" min="0" max="100" step="0.5"></label>
+        <label class="campo">Probabilidad anual CON control (%) <input type="number" id="p-con" value="10" min="0" max="100" step="0.5"></label>
+        <label class="campo">Costo preventivo anual (Q) <input type="number" id="p-cpa" value="600" min="0"></label>
+        <div class="resultado"><span>Pérdida esperada sin control</span><b id="r-sin">Q 1,600</b></div>
+        <div class="resultado"><span>Pérdida esperada con control</span><b id="r-con">Q 800</b></div>
+        <div class="resultado"><span>Punto de equilibrio (reducción mínima)</span><b id="r-eq">7.5 p.p.</b></div>
+        <div class="resultado grande"><span>Beneficio neto esperado</span><b id="r-ben">Q 200</b></div>
+        <div id="veredicto"></div>
+      </div>
+    </div>
+    <p class="tabla-titulo">⚠ Todos los valores son hipótesis de demostración. El resultado no es un ahorro ocurrido ni una rentabilidad demostrada: indica qué pasa si se cumplen los supuestos.</p>
+
+    <h3>Sensibilidad (misma medida, distinta reducción de probabilidad)</h3>
+    <div class="tabla-wrap"><table id="tabla-sens">
+      <tr><th>Probabilidad sin / con control</th><th>Reducción (p.p.)</th><th>Beneficio neto esperado</th></tr>
+    </table></div>
+    <p class="texto">Con CTI = Q 8,000 y CPA = Q 600, el punto de equilibrio es 600 / 8,000 = <b>7.5 puntos porcentuales</b>. Si la reducción real fuera menor, el beneficio esperado sería negativo bajo ese modelo; aun así, los controles esenciales pueden justificarse por continuidad, contratos u otros costos no monetizados.</p>
+  </div>
+</section>
+
+<!-- ============ EQUIPO ============ -->
+<section id="equipo" class="alt">
+  <div class="contenedor rev">
+    <div class="cap">Integrantes</div>
+    <h2>Nuestro equipo</h2>
+    <p class="sub">Integrantes que participan en la investigación.</p>
+
+    <!-- Para cambiar las fotos, edita src="img/archivo.jpg" en cada tarjeta.
+         Las fotos están en tu proyecto, no se solicitan al visitante. -->
+    <div class="equipo">
+      <article class="miembro" data-i="1">
+        <!-- EJEMPLO REAL: esta imagen ya existe en la carpeta img -->
+        <div class="foto"><img src="img/erick.jpg" alt="Fotografía de Erick" loading="lazy"></div>
+        <div class="nombre">Erick Estuardo Lopez</div>
+        <div class="coor">Coordinador</div>
+        <div class="carne">Carné: 0900-25-5655</div>
+      </article>
+      <article class="miembro" data-i="2">
+        <div class="foto"><img src="img/argueta.jpg" alt="Fotografía de Erick" loading="lazy"></div>
+        <div class="nombre">Luis Pablo Argueta</div>
+        <div class="carne">Carné: 0900-25-3857</div>
+      </article>
+      <article class="miembro" data-i="3">
+        <div class="foto"><img src="img/trejo.jpg" alt="Fotografía de Erick" loading="lazy"></div>
+        <div class="nombre">Jose Carlos Trejo</div>
+        <div class="carne">Carné: 0900-25-19324</div>
+      </article>
+      <article class="miembro" data-i="4">
+        <div class="foto"><img src="img/molina.jpg" alt="Fotografía de Erick" loading="lazy"></div>
+        <div class="nombre">Jose Andres Molina</div>
+        <div class="carne">Carné: 0900-25-18276</div>
+      </article>
+      <article class="miembro" data-i="5">
+        <div class="foto"><img src="img/julian.png" alt="Fotografía de Erick" loading="lazy"></div>
+        <div class="nombre">Andre Julian Lemus</div>
+        <div class="carne">Carné: 0900-25-13397</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="contenedor">
+    <!-- EDITA: pie de página -->
+    <p>Investigación académica · Microeconomía · Ingeniería en Sistemas · Guatemala, octubre de 2026</p>
+  </div>
+</footer>
+
+<script>
+/* ============ UTILIDADES ============ */
+const $ = id => document.getElementById(id);
+const Q = n => (n < 0 ? "–Q " : "Q ") + Math.abs(n).toLocaleString("es-GT", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+const num = id => Math.max(0, parseFloat($(id).value) || 0);
+/* ============ BARRA DE PROGRESO + MENÚ ACTIVO + ANIMACIÓN ============ */
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  const p = h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1);
+  $("progreso").style.width = (p * 100) + "%";
+}, { passive: true });
+
+const enlaces = [...document.querySelectorAll("#menu a")];
+const secciones = enlaces.map(a => document.querySelector(a.getAttribute("href")));
+if ("IntersectionObserver" in window) {
+  const obs = new IntersectionObserver(es => {
+    es.forEach(e => {
+      if (e.isIntersecting) {
+        enlaces.forEach(a => a.classList.toggle("activo", a.getAttribute("href") === "#" + e.target.id));
+        const act = document.querySelector("#menu a.activo");
+        if (act) act.scrollIntoView({ block: "nearest", inline: "center" });
+      }
+    });
+  }, { rootMargin: "-40% 0px -55% 0px" });
+  secciones.forEach(s => s && obs.observe(s));
+
+  const rev = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("vis"); rev.unobserve(e.target); } }), { threshold: .05 });
+  document.querySelectorAll(".rev").forEach(el => rev.observe(el));
+} else {
+  document.querySelectorAll(".rev").forEach(el => el.classList.add("vis"));
+}
+
+/* ============ SIMULADOR ECONÓMICO ============ */
+function calcular() {
+  const margen = num("c-ven") * Math.min(num("c-mar"), 100) / 100;
+  const cti = num("c-rec") + num("c-fra") + margen + num("c-otr");
+  $("r-margen").textContent = Q(margen);
+  $("r-cti").textContent = Q(cti);
+
+  const ps = Math.min(num("p-sin"), 100) / 100, pc = Math.min(num("p-con"), 100) / 100, cpa = num("p-cpa");
+  const pae0 = ps * cti, pae1 = pc * cti, ben = pae0 - pae1 - cpa;
+  $("r-sin").textContent = Q(pae0);
+  $("r-con").textContent = Q(pae1);
+  $("r-eq").textContent = cti > 0 ? (cpa / cti * 100).toFixed(1) + " p.p." : "—";
+  const b = $("r-ben");
+  b.textContent = Q(ben);
+  b.className = ben >= 0 ? "pos" : "neg";
+
+  const v = $("veredicto");
+  const red = (ps - pc) * 100;
+  if (cti === 0) { v.className = "aviso"; v.textContent = "Ingresa un costo de incidente mayor que cero."; }
+  else if (ben > 0) { v.className = "aviso ok"; v.textContent = "Bajo estos supuestos la medida se paga sola: reduce " + red.toFixed(1) + " p.p. y el mínimo era " + (cpa / cti * 100).toFixed(1) + " p.p."; }
+  else if (ben === 0) { v.className = "aviso"; v.textContent = "Punto de equilibrio exacto: la medida no gana ni pierde."; }
+  else { v.className = "aviso mal"; v.textContent = "Bajo estos supuestos la medida cuesta más de lo que reduce en pérdida esperada. Aun así puede ser necesaria por continuidad o contratos."; }
+
+  /* Tabla de sensibilidad con el CTI y CPA actuales */
+  const t = $("tabla-sens");
+  while (t.rows.length > 1) t.deleteRow(1);
+  [18, 15, 12.5, 10, 5].forEach(con => {
+    const sin = 20, ben2 = (sin - con) / 100 * cti - cpa;
+    const f = t.insertRow();
+    f.insertCell().textContent = sin + " % / " + con + " %";
+    f.insertCell().textContent = (sin - con);
+    const c = f.insertCell(); c.textContent = Q(Math.round(ben2 * 100) / 100); c.className = ben2 >= 0 ? "pos" : "neg";
+  });
+}
+document.querySelectorAll(".calc input").forEach(i => i.addEventListener("input", calcular));
+calcular();
+
+/* ============ VIDEO DE YOUTUBE: EDITA SOLO ESTA LÍNEA ============ */
+// Pega aquí tu enlace, por ejemplo "https://www.youtube.com/watch?v=ABCDEFGHIJK".
+// Al guardar el HTML, la miniatura aparece automáticamente para todos los visitantes.
+const URL_VIDEO_YOUTUBE = "https://youtu.be/PV8OeHtaWoA";
+
+function obtenerIdYouTube(direccion) {
+  let u;
+  try { u = new URL(direccion.trim()); } catch { return null; }
+  if (u.protocol !== "https:") return null;
+  const dominio = u.hostname.toLowerCase().replace(/^www\./, "");
+  let id = "";
+  if (dominio === "youtu.be") id = u.pathname.split("/")[1] || "";
+  else if (["youtube.com", "m.youtube.com", "youtube-nocookie.com"].includes(dominio)) {
+    if (u.pathname === "/watch") id = u.searchParams.get("v") || "";
+    else { const m = u.pathname.match(/^\/(?:shorts|live|embed)\/([a-zA-Z0-9_-]{11})(?:\/|$)/); if (m) id = m[1]; }
+  }
+  return /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+}
+
+(function mostrarEnlaceVideo() {
+  const id = obtenerIdYouTube(URL_VIDEO_YOUTUBE);
+  if (!id) return; // No se inventa un video cuando todavía no se ha indicado la URL.
+  const pantalla = $("pantalla-video");
+  const enlace = document.createElement("a");
+  enlace.className = "video-miniatura";
+  enlace.href = "https://www.youtube.com/watch?v=" + id;
+  enlace.target = "_blank";
+  enlace.rel = "noopener noreferrer";
+  enlace.setAttribute("aria-label", "Ver el video de nuestra investigación en YouTube (nueva pestaña)");
+
+  const miniatura = document.createElement("img");
+  miniatura.src = "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg";
+  miniatura.alt = "Miniatura del video de la investigación en YouTube";
+  miniatura.loading = "lazy";
+  const reproducir = document.createElement("span");
+  reproducir.className = "video-play";
+  reproducir.textContent = "▶";
+  reproducir.setAttribute("aria-hidden", "true");
+  const rotulo = document.createElement("span");
+  rotulo.className = "video-rotulo";
+  rotulo.textContent = "Ver video en YouTube ↗";
+  enlace.append(miniatura, reproducir, rotulo);
+  pantalla.replaceChildren(enlace);
+  $("video-nota").textContent = "El video se abre en YouTube al hacer clic; no hay que subir ningún archivo.";
+})();
+</script>
+</body>
+</html>
